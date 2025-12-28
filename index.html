@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AdoptUs Pro</title>
+    <title>AdoptUs - Zero Stray Vision</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,195 +22,306 @@
                 extend: {
                     colors: {
                         brand: {
+                            50: '#ECFDF5',
+                            100: '#D1FAE5',
                             500: '#10B981', // Emerald 500
                             600: '#059669', // Emerald 600
+                            900: '#064E3B',
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 h-screen overflow-hidden flex flex-col">
+<body class="bg-gray-50 h-screen flex flex-col font-sans text-gray-800">
 
     <!-- Header / Nav -->
-    <nav class="bg-white shadow-md z-50 flex justify-between items-center px-4 py-3">
-        <div class="flex items-center gap-2">
-            <span class="text-2xl">🐾</span>
-            <h1 class="text-xl font-bold text-gray-800">AdoptUs</h1>
+    <nav class="bg-white shadow-sm z-50 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+                    <span class="text-3xl">🐾</span>
+                    <h1 class="text-xl font-bold text-brand-900 tracking-tight">AdoptUs</h1>
+                </div>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-8">
+                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-map">Map</button>
+                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-adopt">Adopt</button>
+                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-vision">Vision</button>
+                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-about">About</button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button id="nav-auth-btn" class="text-sm bg-brand-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-brand-600 transition shadow-md hover:shadow-lg">
+                        Login
+                    </button>
+                    <button id="nav-profile-btn" class="hidden flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">
+                        <div class="w-8 h-8 bg-brand-500 rounded-full text-white flex items-center justify-center text-sm font-bold">G</div>
+                    </button>
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="flex gap-3">
-            <button id="nav-auth-btn" class="text-sm bg-brand-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-brand-600 transition">
-                Login
-            </button>
-            <button id="nav-profile-btn" class="hidden flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">
-                <div class="w-6 h-6 bg-brand-500 rounded-full text-white flex items-center justify-center text-xs">G</div>
-                <span class="text-sm font-semibold text-gray-700 truncate max-w-[80px]">User</span>
-            </button>
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-map">Map</button>
+                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-adopt">Adopt</button>
+                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-vision">Vision</button>
+                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-about">About</button>
+            </div>
         </div>
     </nav>
 
-    <!-- Filter Bar (Floating) -->
-    <div class="absolute top-20 left-1/2 transform -translate-x-1/2 z-40 flex gap-2 overflow-x-auto max-w-full px-4 py-2 no-scrollbar">
-        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="All">All</button>
-        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Dog">Dogs 🐶</button>
-        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Cat">Cats 🐱</button>
-        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Critical">Critical 🚨</button>
-        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Adopted">Adopted 🏠</button>
-    </div>
+    <!-- Main Content Area -->
+    <main class="flex-1 relative overflow-hidden">
 
-    <!-- Map Container -->
-    <main class="flex-1 relative">
-        <div id="map"></div>
+        <!-- View: Map (Default) -->
+        <section id="view-map" class="view-section h-full w-full relative">
+            <!-- Filter Bar (Floating) -->
+            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-[400] w-full max-w-2xl px-4">
+                <div class="bg-white/90 backdrop-blur-sm shadow-lg rounded-full p-2 flex gap-2 overflow-x-auto no-scrollbar border border-gray-100">
+                    <button class="filter-chip flex-shrink-0 bg-brand-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold transition shadow-sm" data-filter="All">All</button>
+                    <button class="filter-chip flex-shrink-0 bg-white hover:bg-gray-50 text-gray-700 px-4 py-1.5 rounded-full text-sm font-semibold transition border border-gray-200" data-filter="Dog">Dogs 🐶</button>
+                    <button class="filter-chip flex-shrink-0 bg-white hover:bg-gray-50 text-gray-700 px-4 py-1.5 rounded-full text-sm font-semibold transition border border-gray-200" data-filter="Cat">Cats 🐱</button>
+                    <button class="filter-chip flex-shrink-0 bg-white hover:bg-gray-50 text-gray-700 px-4 py-1.5 rounded-full text-sm font-semibold transition border border-gray-200" data-filter="Critical">Critical 🚨</button>
+                    <button class="filter-chip flex-shrink-0 bg-white hover:bg-gray-50 text-gray-700 px-4 py-1.5 rounded-full text-sm font-semibold transition border border-gray-200" data-filter="Adopted">Adopted 🏠</button>
+                </div>
+            </div>
 
-        <!-- FAB -->
-        <button id="fab-report" class="hidden absolute bottom-8 right-6 w-14 h-14 bg-brand-500 hover:bg-brand-600 text-white rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition transform hover:scale-105 z-30">
-            +
-        </button>
+            <div id="map" class="w-full h-full z-0"></div>
+
+            <!-- FAB -->
+            <button id="fab-report" class="hidden absolute bottom-8 right-6 w-16 h-16 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-2xl flex items-center justify-center text-4xl font-light transition transform hover:scale-110 active:scale-95 z-[400]">
+                +
+            </button>
+        </section>
+
+        <!-- View: Adopt List -->
+        <section id="view-adopt" class="view-section hidden h-full overflow-y-auto bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Find Your New Best Friend</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">These animals have been reported by our community guardians. Filter to find the one waiting for you.</p>
+                </div>
+
+                <!-- Filters for List View -->
+                <div class="flex flex-wrap justify-center gap-3 mb-8" id="adopt-filters">
+                    <!-- Cloned dynamically or static -->
+                    <button class="adopt-filter-btn active bg-brand-600 text-white px-5 py-2 rounded-full font-semibold shadow-sm" data-filter="All">All</button>
+                    <button class="adopt-filter-btn bg-white text-gray-700 px-5 py-2 rounded-full font-semibold shadow-sm hover:bg-gray-50" data-filter="Dog">Dogs</button>
+                    <button class="adopt-filter-btn bg-white text-gray-700 px-5 py-2 rounded-full font-semibold shadow-sm hover:bg-gray-50" data-filter="Cat">Cats</button>
+                    <button class="adopt-filter-btn bg-white text-gray-700 px-5 py-2 rounded-full font-semibold shadow-sm hover:bg-gray-50" data-filter="adoption-ready">Ready for Home</button>
+                </div>
+
+                <div id="adopt-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Dynamic Cards -->
+                    <div class="animate-pulse flex flex-col space-y-4">
+                        <div class="bg-gray-200 h-64 rounded-2xl"></div>
+                        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Vision -->
+        <section id="view-vision" class="view-section hidden h-full overflow-y-auto bg-white">
+            <div class="relative bg-brand-900 text-white py-24">
+                <div class="absolute inset-0 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-20" alt="Dog background">
+                </div>
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight">Zero Strays. Infinite Love.</h1>
+                    <p class="text-xl md:text-2xl text-brand-100 max-w-3xl mx-auto">We envision a world where every street animal is identified, cared for, and eventually homed through community action.</p>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-3 gap-12">
+                    <div class="text-center p-6 bg-gray-50 rounded-2xl">
+                        <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📍</div>
+                        <h3 class="text-xl font-bold mb-3">Map & Monitor</h3>
+                        <p class="text-gray-600">Using crowdsourced geolocation to track stray populations and identify critical cases immediately.</p>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-2xl">
+                        <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🤝</div>
+                        <h3 class="text-xl font-bold mb-3">Community First</h3>
+                        <p class="text-gray-600">Empowering local guardians with tools to coordinate feeding, medical aid, and adoption drives.</p>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-2xl">
+                        <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🏡</div>
+                        <h3 class="text-xl font-bold mb-3">Sustainable Adoption</h3>
+                        <p class="text-gray-600">Connecting rescued animals directly with loving families through a transparent, verified process.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: About -->
+        <section id="view-about" class="view-section hidden h-full overflow-y-auto bg-white">
+            <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b pb-4">About AdoptUs</h2>
+
+                <div class="prose prose-lg text-gray-600">
+                    <p class="mb-6">
+                        AdoptUs is a <strong>progressive web application</strong> built with a singular purpose: to leverage technology for animal welfare. We believe that technology should be accessible to everyone, which is why we've built this platform to be lightweight, fast, and free to use.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-800 mt-8 mb-4">How It Works</h3>
+                    <ul class="space-y-4 list-disc pl-5">
+                        <li><strong>Spot:</strong> See a stray animal? Snap a photo and upload it. Our compression tech ensures it works even on slow networks.</li>
+                        <li><strong>Locate:</strong> The GPS pin helps other guardians find the animal to provide food or care.</li>
+                        <li><strong>Adopt:</strong> Families looking for a pet can browse local rescues and connect directly via WhatsApp.</li>
+                    </ul>
+
+                    <div class="mt-12 bg-brand-50 p-8 rounded-2xl border border-brand-100">
+                        <h4 class="font-bold text-brand-800 mb-2">Join the Movement</h4>
+                        <p class="text-sm">We are an open-source initiative. Join us in making our cities friendlier for our four-legged companions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Toast Container -->
-    <div id="toast-container" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4"></div>
+    <div id="toast-container" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-[1000] w-full max-w-sm px-4"></div>
 
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="modal hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 m-4 shadow-2xl relative">
-            <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
-
+    <!-- Modals (Auth, Wizard, Profile) - Kept same as before -->
+    <div id="auth-modal" class="modal hidden fixed inset-0 z-[2000] bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
             <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Welcome Guardian</h2>
-
-            <!-- Google Login -->
-            <button id="google-login-btn" class="w-full border border-gray-300 rounded-lg py-2.5 flex items-center justify-center gap-2 hover:bg-gray-50 transition mb-4">
+            <button id="google-login-btn" class="w-full border border-gray-300 rounded-lg py-3 flex items-center justify-center gap-2 hover:bg-gray-50 transition mb-4 font-medium">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
-                <span class="text-gray-700 font-medium">Continue with Google</span>
+                Continue with Google
             </button>
-
-            <div class="relative flex py-2 items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-400 text-sm">Or with Email</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
-
-            <!-- Email Forms (Simplified Toggle for demo) -->
-            <form id="login-form" class="space-y-4 mt-4">
-                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
-                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
-                <button type="submit" class="w-full bg-brand-500 text-white py-2 rounded-lg font-bold hover:bg-brand-600 transition">Log In</button>
+            <div class="text-center text-sm text-gray-500 my-4">OR</div>
+            <form id="login-form" class="space-y-4">
+                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <button type="submit" class="w-full bg-brand-500 text-white py-3 rounded-lg font-bold hover:bg-brand-600 transition shadow-lg shadow-brand-200">Log In</button>
             </form>
-
-            <div class="mt-4 text-center text-sm">
-                <p class="text-gray-600">New here? <span class="text-brand-600 cursor-pointer hover:underline" onclick="document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden');">Sign Up</span></p>
-            </div>
-
-             <form id="signup-form" class="space-y-4 mt-4 hidden">
-                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
-                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
-                <button type="submit" class="w-full bg-brand-500 text-white py-2 rounded-lg font-bold hover:bg-brand-600 transition">Create Account</button>
-                <div class="text-center text-sm"><span class="text-brand-600 cursor-pointer hover:underline" onclick="document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden');">Back to Login</span></div>
+             <form id="signup-form" class="space-y-4 hidden">
+                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <button type="submit" class="w-full bg-brand-500 text-white py-3 rounded-lg font-bold hover:bg-brand-600 transition shadow-lg shadow-brand-200">Create Account</button>
             </form>
+            <div class="mt-6 text-center text-sm">
+                <p class="text-gray-600"><span id="toggle-auth" class="text-brand-600 cursor-pointer hover:underline font-semibold">Switch to Sign Up/Login</span></p>
+            </div>
         </div>
     </div>
 
     <!-- Wizard Modal -->
-    <div id="wizard-modal" class="modal hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-lg p-6 m-4 shadow-2xl relative h-[80vh] flex flex-col">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-gray-800">Report Stray</h2>
+    <div id="wizard-modal" class="modal hidden fixed inset-0 z-[2000] bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-0 shadow-2xl relative h-[85vh] flex flex-col overflow-hidden">
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                <h2 class="text-lg font-bold text-gray-800">Report Stray</h2>
                 <button class="modal-close text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
             </div>
 
-            <form id="wizard-form" class="flex-1 overflow-y-auto pr-1">
-                <!-- Step 1: Photo -->
-                <div id="step-1" class="space-y-4">
-                    <label class="block text-sm font-bold text-gray-700">1. Take a Photo</label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 cursor-pointer relative">
-                        <input type="file" id="post-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                        <div class="text-gray-500">
-                            <span class="text-4xl block mb-2">📸</span>
-                            <span class="text-sm">Click to upload or capture</span>
+            <div class="flex-1 overflow-y-auto p-6">
+                <form id="wizard-form">
+                    <!-- Step 1 -->
+                    <div id="step-1" class="space-y-6">
+                        <label class="block text-sm font-bold text-gray-700">1. Take a Photo</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex flex-col items-center justify-center text-gray-500 hover:bg-gray-50 transition relative">
+                            <input type="file" id="post-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                            <span class="text-4xl mb-2">📸</span>
+                            <span class="text-sm font-medium">Tap to upload</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Step 2: Location -->
-                <div id="step-2" class="space-y-4 hidden">
-                    <label class="block text-sm font-bold text-gray-700">2. Confirm Location</label>
-                    <div id="wizard-map"></div>
-                    <p class="text-xs text-gray-500">Drag the pin to the exact spot.</p>
-                </div>
-
-                <!-- Step 3: Details -->
-                <div id="step-3" class="space-y-4 hidden">
-                    <label class="block text-sm font-bold text-gray-700">3. Details</label>
-
-                    <div>
-                        <label class="text-xs text-gray-500">Animal Type</label>
-                        <select id="post-type" class="w-full border rounded p-2">
-                            <option value="Dog">Dog</option>
-                            <option value="Cat">Cat</option>
-                            <option value="Bird">Bird</option>
-                            <option value="Other">Other</option>
-                        </select>
+                    <!-- Step 2 -->
+                    <div id="step-2" class="space-y-4 hidden">
+                        <label class="block text-sm font-bold text-gray-700">2. Confirm Location</label>
+                        <div id="wizard-map" class="rounded-xl overflow-hidden shadow-inner border border-gray-200"></div>
+                        <p class="text-xs text-center text-gray-500 mt-2">Drag the pin to exact location</p>
                     </div>
 
-                    <div>
-                        <label class="text-xs text-gray-500">Urgency</label>
-                        <select id="post-urgency" class="w-full border rounded p-2">
-                            <option value="needs-food">Needs Food/Water</option>
-                            <option value="critical">Critical / Injured</option>
-                            <option value="adoption-ready">Healthy / Adoption Ready</option>
-                        </select>
+                    <!-- Step 3 -->
+                    <div id="step-3" class="space-y-5 hidden">
+                        <label class="block text-sm font-bold text-gray-700">3. Details</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Type</label>
+                                <select id="post-type" class="w-full mt-1 border border-gray-300 rounded-lg p-2.5 bg-white">
+                                    <option value="Dog">Dog</option>
+                                    <option value="Cat">Cat</option>
+                                    <option value="Bird">Bird</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Urgency</label>
+                                <select id="post-urgency" class="w-full mt-1 border border-gray-300 rounded-lg p-2.5 bg-white">
+                                    <option value="needs-food">Needs Food</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="adoption-ready">Ready to Adopt</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Description</label>
+                            <textarea id="post-desc" class="w-full mt-1 border border-gray-300 rounded-lg p-3 h-24 resize-none" placeholder="Color, size, distinguishing marks..."></textarea>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">WhatsApp</label>
+                            <input type="tel" id="post-whatsapp" class="w-full mt-1 border border-gray-300 rounded-lg p-3" placeholder="e.g. 15551234567">
+                        </div>
                     </div>
+                </form>
+            </div>
 
-                    <div>
-                        <label class="text-xs text-gray-500">Description</label>
-                        <textarea id="post-desc" class="w-full border rounded p-2 h-20" placeholder="Color, size, condition..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="text-xs text-gray-500">WhatsApp (for contact)</label>
-                        <input type="tel" id="post-whatsapp" class="w-full border rounded p-2" placeholder="e.g. 15551234567">
-                    </div>
-                </div>
-            </form>
-
-            <div class="flex justify-between mt-6 pt-4 border-t border-gray-100">
-                <button id="wizard-back" class="hidden px-4 py-2 text-gray-500 hover:bg-gray-100 rounded">Back</button>
-                <button id="wizard-next" class="ml-auto px-6 py-2 bg-brand-500 text-white rounded font-bold hover:bg-brand-600">Next</button>
-                <button id="wizard-submit" class="hidden ml-auto px-6 py-2 bg-brand-500 text-white rounded font-bold hover:bg-brand-600">Submit Report</button>
+            <div class="p-4 border-t bg-gray-50 flex justify-between">
+                <button id="wizard-back" class="hidden px-6 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition">Back</button>
+                <button id="wizard-next" class="ml-auto px-8 py-2 bg-brand-500 text-white rounded-lg font-bold hover:bg-brand-600 transition shadow-lg shadow-brand-200">Next</button>
+                <button id="wizard-submit" class="hidden ml-auto px-8 py-2 bg-brand-600 text-white rounded-lg font-bold hover:bg-brand-700 transition shadow-lg shadow-brand-200">Submit</button>
             </div>
         </div>
     </div>
 
     <!-- Profile Modal -->
-    <div id="profile-modal" class="modal hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 m-4 shadow-2xl relative">
+    <div id="profile-modal" class="modal hidden fixed inset-0 z-[2000] bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
 
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-brand-100 rounded-full mx-auto flex items-center justify-center text-3xl mb-2">🦸</div>
-                <h2 id="profile-name" class="text-xl font-bold">User</h2>
+            <div class="flex flex-col items-center mb-8">
+                <div class="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center text-3xl mb-3 text-brand-600">🦸</div>
+                <h2 id="profile-name" class="text-xl font-bold text-gray-900">User</h2>
                 <p id="profile-email" class="text-gray-500 text-sm">user@example.com</p>
-                <div class="mt-2 inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold">
+                <div class="mt-3 bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
                     ⭐ <span id="profile-karma">0 Karma</span>
                 </div>
             </div>
 
-            <div class="border-t pt-4">
-                <h3 class="font-bold text-gray-700 mb-3">My Rescues</h3>
-                <div id="my-rescues-list" class="max-h-60 overflow-y-auto">
+            <div class="border-t pt-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="text-brand-500">●</span> My Rescues
+                </h3>
+                <div id="my-rescues-list" class="space-y-3 max-h-60 overflow-y-auto pr-2">
                     <!-- Dynamic List -->
                 </div>
             </div>
 
-            <button id="logout-btn" class="w-full mt-6 bg-red-50 text-red-600 py-2 rounded font-bold hover:bg-red-100">Log Out</button>
+            <button id="logout-btn" class="w-full mt-8 border border-red-100 text-red-500 py-2.5 rounded-lg font-semibold hover:bg-red-50 transition">Log Out</button>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

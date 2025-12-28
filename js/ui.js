@@ -1,15 +1,9 @@
 // --- UI Utilities ---
 
-/**
- * Show a toast notification
- * @param {string} message - Message to display
- * @param {string} type - 'success', 'error', 'info'
- */
 export function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
 
-    // Tailwind classes for toast
     const baseClasses = "flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 transition-opacity duration-300 ease-in-out opacity-0 translate-y-2 transform";
 
     let icon = '';
@@ -37,19 +31,15 @@ export function showToast(message, type = 'info') {
         </button>
     `;
 
-    // Close button logic
     toast.querySelector('button').addEventListener('click', () => {
         toast.remove();
     });
 
     container.appendChild(toast);
-
-    // Animation in
     requestAnimationFrame(() => {
         toast.classList.remove('opacity-0', 'translate-y-2');
     });
 
-    // Auto dismiss
     setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-2');
         setTimeout(() => toast.remove(), 300);
@@ -70,4 +60,58 @@ export function toggleModal(modalId, show = true) {
 export function updateElementText(id, text) {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
+}
+
+// --- NEW: Adoption Grid Rendering ---
+
+export function renderAdoptionGrid(posts, filterType = 'All') {
+    const grid = document.getElementById('adopt-grid');
+    grid.innerHTML = ''; // Clear current
+
+    const filtered = posts.filter(post => {
+        if (filterType === 'All') return true;
+        if (filterType === 'adoption-ready') return post.urgency === 'adoption-ready' || post.status === 'adoption-ready';
+        return post.type === filterType;
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-12">
+                <div class="text-6xl mb-4">🐾</div>
+                <h3 class="text-xl font-bold text-gray-400">No friends found matching filters.</h3>
+                <p class="text-gray-400">Try changing your criteria.</p>
+            </div>
+        `;
+        return;
+    }
+
+    filtered.forEach(post => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border border-gray-100 flex flex-col";
+
+        const badgeColor = post.status === 'adopted' ? 'bg-green-100 text-green-800' : (post.urgency === 'critical' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800');
+        const badgeText = post.status === 'adopted' ? 'Adopted' : (post.urgency === 'critical' ? 'Critical' : 'Ready to Adopt');
+
+        card.innerHTML = `
+            <div class="relative h-56 bg-gray-100">
+                <img src="${post.imageUrl}" class="w-full h-full object-cover" loading="lazy">
+                <div class="absolute top-3 right-3 ${badgeColor} text-xs font-bold px-3 py-1 rounded-full shadow-sm uppercase tracking-wide">
+                    ${badgeText}
+                </div>
+            </div>
+            <div class="p-5 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-xl font-bold text-gray-900">${post.type}</h3>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">${new Date(post.timestamp?.toDate ? post.timestamp.toDate() : post.timestamp).toLocaleDateString()}</span>
+                </div>
+                <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">${post.description}</p>
+                <div class="mt-auto pt-4 border-t border-gray-50">
+                    <a href="https://wa.me/${post.whatsapp}" target="_blank" class="block w-full text-center bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 rounded-lg transition shadow shadow-brand-200">
+                        Chat on WhatsApp
+                    </a>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
 }
