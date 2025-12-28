@@ -1,12 +1,12 @@
 import { initAuth, getCurrentUser, loginWithGoogle, loginWithEmail, signupWithEmail, logout, getUserData } from './auth.js';
 import { initMap, renderMarkers, applyFilters, initWizardMap } from './map.js';
 import { fetchNearbyPosts, createPost, compressAndUploadImage, markAsAdopted, getUserPosts } from './db.js';
-import { showToast, toggleModal, updateElementText, renderAdoptionGrid } from './ui.js';
+import { showToast, toggleModal, updateElementText, renderAdoptionGrid, renderFeaturedAnimals } from './ui.js';
 
 // Global State
 let userLocation = { lat: 0, lng: 0 };
 let wizardMapInstance = null;
-let currentView = 'view-map';
+let currentView = 'view-home'; // Changed default to home
 let allPostsData = []; // Cache for both map and grid
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // 2. Init Map (Loads default location first)
+    // We defer this slightly so map container is ready if needed,
+    // but essential to get location for fetching posts
     initMap('map', async (lat, lng) => {
         userLocation = { lat, lng };
         await loadPosts();
@@ -27,10 +29,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function handleInitialRoute() {
-    // Simple hash routing if needed, or default
+    // Simple hash routing
     const hash = window.location.hash.replace('#', '');
-    if (['view-map', 'view-adopt', 'view-vision', 'view-about'].includes(hash)) {
+    if (['view-map', 'view-adopt', 'view-vision', 'view-about', 'view-home'].includes(hash)) {
         switchView(hash);
+    } else {
+        switchView('view-home'); // Default fallback
     }
 }
 
@@ -45,7 +49,7 @@ function switchView(targetId) {
         currentView = targetId;
         window.location.hash = targetId;
 
-        // Special handling
+        // View-specific logic
         if (targetId === 'view-map') {
             // Force map resize calc
             setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
@@ -53,14 +57,23 @@ function switchView(targetId) {
         if (targetId === 'view-adopt') {
             renderAdoptionGrid(allPostsData);
         }
+        if (targetId === 'view-home') {
+            renderFeaturedAnimals(allPostsData, 3);
+        }
     }
 
     // Update Nav State
     document.querySelectorAll('.nav-link').forEach(btn => {
+        // Handle both sidebar and topnav
         if (btn.dataset.target === targetId) {
-            btn.classList.add('text-brand-600', 'bg-gray-50');
+            // Only style top-nav links that are actually in the nav bar
+            if (btn.parentElement.classList.contains('md:flex') || btn.parentElement.classList.contains('space-y-1')) {
+                btn.classList.add('text-brand-600', 'bg-gray-50');
+            }
         } else {
-            btn.classList.remove('text-brand-600', 'bg-gray-50');
+             if (btn.parentElement.classList.contains('md:flex') || btn.parentElement.classList.contains('space-y-1')) {
+                btn.classList.remove('text-brand-600', 'bg-gray-50');
+             }
         }
     });
 
@@ -76,8 +89,12 @@ function updateAuthUI(user) {
     if (user) {
         authBtn.classList.add('hidden');
         profileBtn.classList.remove('hidden');
-        // profileBtn.querySelector('span').textContent = user.displayName || 'User'; // removed span in new HTML
-        reportBtn.classList.remove('hidden');
+        // reportBtn visibility depends on view now?
+        // Original logic: Report button only on map.
+        // We will handle report button visibility in switchView if needed,
+        // but for now let's keep it global or just on map.
+        // Actually, the HTML structure puts #fab-report inside #view-map.
+        // So it naturally hides when view-map is hidden.
 
         updateElementText('profile-name', user.displayName || 'Guardian');
         updateElementText('profile-email', user.email);
@@ -88,7 +105,6 @@ function updateAuthUI(user) {
     } else {
         authBtn.classList.remove('hidden');
         profileBtn.classList.add('hidden');
-        reportBtn.classList.add('hidden');
     }
 }
 
@@ -102,6 +118,8 @@ async function loadPosts() {
             renderMarkers(posts);
         } else if (currentView === 'view-adopt') {
             renderAdoptionGrid(posts);
+        } else if (currentView === 'view-home') {
+            renderFeaturedAnimals(posts);
         }
     } catch (err) {
         console.error(err);
@@ -113,8 +131,11 @@ function setupEventListeners() {
     // Navigation (Desktop & Mobile)
     document.querySelectorAll('.nav-link').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchView(e.target.dataset.target);
+            // e.preventDefault(); // Don't prevent default if it's not a link?
+            // Actually it's a button so no default nav.
+            // But if we clicked an image inside the button/div, we need to bubble up or use currentTarget
+            const target = e.currentTarget.dataset.target;
+            if (target) switchView(target);
         });
     });
 

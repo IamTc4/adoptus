@@ -64,8 +64,39 @@ export function updateElementText(id, text) {
 
 // --- NEW: Adoption Grid Rendering ---
 
+function createAnimalCard(post) {
+    const card = document.createElement('div');
+    card.className = "bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border border-gray-100 flex flex-col";
+
+    const badgeColor = post.status === 'adopted' ? 'bg-green-100 text-green-800' : (post.urgency === 'critical' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800');
+    const badgeText = post.status === 'adopted' ? 'Adopted' : (post.urgency === 'critical' ? 'Critical' : 'Ready to Adopt');
+
+    card.innerHTML = `
+        <div class="relative h-56 bg-gray-100 group cursor-pointer" onclick="document.querySelector('[data-target=view-adopt]').click()">
+            <img src="${post.imageUrl}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute top-3 right-3 ${badgeColor} text-xs font-bold px-3 py-1 rounded-full shadow-sm uppercase tracking-wide">
+                ${badgeText}
+            </div>
+        </div>
+        <div class="p-5 flex-1 flex flex-col">
+            <div class="flex justify-between items-start mb-2">
+                <h3 class="text-xl font-bold text-gray-900">${post.type}</h3>
+                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">${new Date(post.timestamp?.toDate ? post.timestamp.toDate() : post.timestamp).toLocaleDateString()}</span>
+            </div>
+            <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">${post.description}</p>
+            <div class="mt-auto pt-4 border-t border-gray-50">
+                <a href="https://wa.me/${post.whatsapp}" target="_blank" class="block w-full text-center bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 rounded-lg transition shadow shadow-brand-200">
+                    Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+    `;
+    return card;
+}
+
 export function renderAdoptionGrid(posts, filterType = 'All') {
     const grid = document.getElementById('adopt-grid');
+    if (!grid) return;
     grid.innerHTML = ''; // Clear current
 
     const filtered = posts.filter(post => {
@@ -86,32 +117,29 @@ export function renderAdoptionGrid(posts, filterType = 'All') {
     }
 
     filtered.forEach(post => {
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border border-gray-100 flex flex-col";
+        grid.appendChild(createAnimalCard(post));
+    });
+}
 
-        const badgeColor = post.status === 'adopted' ? 'bg-green-100 text-green-800' : (post.urgency === 'critical' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800');
-        const badgeText = post.status === 'adopted' ? 'Adopted' : (post.urgency === 'critical' ? 'Critical' : 'Ready to Adopt');
+export function renderFeaturedAnimals(posts, limit = 3) {
+    const grid = document.getElementById('home-featured-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
 
-        card.innerHTML = `
-            <div class="relative h-56 bg-gray-100">
-                <img src="${post.imageUrl}" class="w-full h-full object-cover" loading="lazy">
-                <div class="absolute top-3 right-3 ${badgeColor} text-xs font-bold px-3 py-1 rounded-full shadow-sm uppercase tracking-wide">
-                    ${badgeText}
-                </div>
-            </div>
-            <div class="p-5 flex-1 flex flex-col">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="text-xl font-bold text-gray-900">${post.type}</h3>
-                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">${new Date(post.timestamp?.toDate ? post.timestamp.toDate() : post.timestamp).toLocaleDateString()}</span>
-                </div>
-                <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">${post.description}</p>
-                <div class="mt-auto pt-4 border-t border-gray-50">
-                    <a href="https://wa.me/${post.whatsapp}" target="_blank" class="block w-full text-center bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 rounded-lg transition shadow shadow-brand-200">
-                        Chat on WhatsApp
-                    </a>
-                </div>
+    // Filter for only valid posts, maybe prioritize 'adoption-ready' or just recent ones
+    // For now, just take the first few
+    const featured = posts.slice(0, limit);
+
+    if (featured.length === 0) {
+        grid.innerHTML = `
+             <div class="col-span-full text-center py-8">
+                <p class="text-gray-500">No featured animals at the moment. Check back soon!</p>
             </div>
         `;
-        grid.appendChild(card);
+        return;
+    }
+
+    featured.forEach(post => {
+        grid.appendChild(createAnimalCard(post));
     });
 }

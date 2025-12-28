@@ -51,9 +51,9 @@
 
                 <!-- Desktop Nav -->
                 <div class="hidden md:flex items-center gap-8">
-                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-map">Map</button>
+                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-home">Home</button>
                     <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-adopt">Adopt</button>
-                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-vision">Vision</button>
+                    <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-map">Map</button>
                     <button class="nav-link text-gray-600 hover:text-brand-600 font-medium transition" data-target="view-about">About</button>
                 </div>
 
@@ -74,9 +74,9 @@
         <!-- Mobile Nav Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-map">Map</button>
+                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-home">Home</button>
                 <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-adopt">Adopt</button>
-                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-vision">Vision</button>
+                <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-map">Map</button>
                 <button class="nav-link block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 rounded" data-target="view-about">About</button>
             </div>
         </div>
@@ -85,8 +85,108 @@
     <!-- Main Content Area -->
     <main class="flex-1 relative overflow-hidden">
 
-        <!-- View: Map (Default) -->
-        <section id="view-map" class="view-section h-full w-full relative">
+        <!-- View: Home (Landing) -->
+        <section id="view-home" class="view-section h-full overflow-y-auto bg-gray-50">
+            <!-- Hero -->
+            <div class="relative bg-brand-900 text-white">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-30" alt="Dog background">
+                </div>
+                <div class="relative max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Zero Strays. Infinite Love.</h1>
+                    <p class="text-xl md:text-2xl text-brand-100 max-w-2xl mb-8">Connecting Mumbai's street animals with loving families and community guardians.</p>
+                    <button class="nav-link bg-brand-500 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-brand-600 transition shadow-lg transform hover:scale-105" data-target="view-adopt">
+                        Meet the Animals
+                    </button>
+                </div>
+            </div>
+
+            <!-- Portal Blocks / Key Actions -->
+            <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 -mt-16 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1 -->
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden group cursor-pointer nav-link" data-target="view-map">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1596769062380-0a25fa12463e?auto=format&fit=crop&q=60" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500" alt="Stray dog">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Report a Stray</h3>
+                            <p class="text-gray-600 mb-4">See an animal in need? Pin their location to alert our network of feeders and rescuers.</p>
+                            <span class="text-brand-600 font-semibold group-hover:underline">Report Now →</span>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden group cursor-pointer nav-link" data-target="view-about">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1551730459-92db2a308d6a?auto=format&fit=crop&q=60" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500" alt="Volunteers">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Community Guardians</h3>
+                            <p class="text-gray-600 mb-4">Join 500+ Mumbaikars dedicated to feeding, treating, and protecting our streeties.</p>
+                            <span class="text-brand-600 font-semibold group-hover:underline">Learn More →</span>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden group cursor-pointer nav-link" data-target="view-adopt">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=60" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500" alt="Happy dog">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Success Stories</h3>
+                            <p class="text-gray-600 mb-4">From the streets of Bandra to a cozy sofa. See the lives changed by adoption.</p>
+                            <span class="text-brand-600 font-semibold group-hover:underline">Read Stories →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Stats -->
+            <div class="bg-white py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-12">Our Impact in Mumbai</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div>
+                            <div class="text-4xl font-bold text-brand-600 mb-2">1,200+</div>
+                            <div class="text-gray-500">Animals Fed Daily</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-brand-600 mb-2">450+</div>
+                            <div class="text-gray-500">Adoptions</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-brand-600 mb-2">85</div>
+                            <div class="text-gray-500">Partner Rescues</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-brand-600 mb-2">10k+</div>
+                            <div class="text-gray-500">Active Users</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Animals -->
+            <div class="bg-gray-50 py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-end mb-8">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-900">Featured Animals</h2>
+                            <p class="text-gray-600 mt-2">These friends are waiting for a home right now.</p>
+                        </div>
+                        <button class="nav-link text-brand-600 font-semibold hover:text-brand-700" data-target="view-adopt">View All →</button>
+                    </div>
+                    <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic Content -->
+                        <div class="animate-pulse bg-white rounded-xl h-80"></div>
+                        <div class="animate-pulse bg-white rounded-xl h-80"></div>
+                        <div class="animate-pulse bg-white rounded-xl h-80"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Map -->
+        <section id="view-map" class="view-section hidden h-full w-full relative">
             <!-- Filter Bar (Floating) -->
             <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-[400] w-full max-w-2xl px-4">
                 <div class="bg-white/90 backdrop-blur-sm shadow-lg rounded-full p-2 flex gap-2 overflow-x-auto no-scrollbar border border-gray-100">
@@ -116,7 +216,6 @@
 
                 <!-- Filters for List View -->
                 <div class="flex flex-wrap justify-center gap-3 mb-8" id="adopt-filters">
-                    <!-- Cloned dynamically or static -->
                     <button class="adopt-filter-btn active bg-brand-600 text-white px-5 py-2 rounded-full font-semibold shadow-sm" data-filter="All">All</button>
                     <button class="adopt-filter-btn bg-white text-gray-700 px-5 py-2 rounded-full font-semibold shadow-sm hover:bg-gray-50" data-filter="Dog">Dogs</button>
                     <button class="adopt-filter-btn bg-white text-gray-700 px-5 py-2 rounded-full font-semibold shadow-sm hover:bg-gray-50" data-filter="Cat">Cats</button>
@@ -134,59 +233,63 @@
             </div>
         </section>
 
-        <!-- View: Vision -->
-        <section id="view-vision" class="view-section hidden h-full overflow-y-auto bg-white">
-            <div class="relative bg-brand-900 text-white py-24">
-                <div class="absolute inset-0 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-20" alt="Dog background">
-                </div>
-                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight">Zero Strays. Infinite Love.</h1>
-                    <p class="text-xl md:text-2xl text-brand-100 max-w-3xl mx-auto">We envision a world where every street animal is identified, cared for, and eventually homed through community action.</p>
-                </div>
-            </div>
-
-            <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-                <div class="grid md:grid-cols-3 gap-12">
-                    <div class="text-center p-6 bg-gray-50 rounded-2xl">
-                        <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📍</div>
-                        <h3 class="text-xl font-bold mb-3">Map & Monitor</h3>
-                        <p class="text-gray-600">Using crowdsourced geolocation to track stray populations and identify critical cases immediately.</p>
-                    </div>
-                    <div class="text-center p-6 bg-gray-50 rounded-2xl">
-                        <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🤝</div>
-                        <h3 class="text-xl font-bold mb-3">Community First</h3>
-                        <p class="text-gray-600">Empowering local guardians with tools to coordinate feeding, medical aid, and adoption drives.</p>
-                    </div>
-                    <div class="text-center p-6 bg-gray-50 rounded-2xl">
-                        <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🏡</div>
-                        <h3 class="text-xl font-bold mb-3">Sustainable Adoption</h3>
-                        <p class="text-gray-600">Connecting rescued animals directly with loving families through a transparent, verified process.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- View: About -->
+        <!-- View: About (Revamped) -->
         <section id="view-about" class="view-section hidden h-full overflow-y-auto bg-white">
-            <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b pb-4">About AdoptUs</h2>
-
-                <div class="prose prose-lg text-gray-600">
-                    <p class="mb-6">
-                        AdoptUs is a <strong>progressive web application</strong> built with a singular purpose: to leverage technology for animal welfare. We believe that technology should be accessible to everyone, which is why we've built this platform to be lightweight, fast, and free to use.
+            <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">About AdoptUs Mumbai</h2>
+                    <p class="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+                        Building a compassionate city where humans and animals coexist in harmony.
                     </p>
+                </div>
 
-                    <h3 class="text-xl font-bold text-gray-800 mt-8 mb-4">How It Works</h3>
-                    <ul class="space-y-4 list-disc pl-5">
-                        <li><strong>Spot:</strong> See a stray animal? Snap a photo and upload it. Our compression tech ensures it works even on slow networks.</li>
-                        <li><strong>Locate:</strong> The GPS pin helps other guardians find the animal to provide food or care.</li>
-                        <li><strong>Adopt:</strong> Families looking for a pet can browse local rescues and connect directly via WhatsApp.</li>
-                    </ul>
+                <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1599146036815-5654754a614d?auto=format&fit=crop&q=80" class="rounded-2xl shadow-lg w-full" alt="Team feeding dogs">
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Who We Are</h3>
+                        <div class="prose text-gray-600">
+                            <p class="mb-4">
+                                AdoptUs is a volunteer-run platform dedicated to the welfare of Mumbai's stray animals. We believe that technology can bridge the gap between a stray animal in need and a human willing to help.
+                            </p>
+                            <p class="mb-4">
+                                Founded in 2024, we started with a simple idea: <strong>Visibility saves lives.</strong> By mapping strays in areas like Bandra, Andheri, and Colaba, we ensure no animal goes unnoticed or unfed.
+                            </p>
+                            <p>
+                                Today, we are a growing community of feeders, rescuers, vets, and adopters working together to create a #ZeroStrayMumbai.
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="mt-12 bg-brand-50 p-8 rounded-2xl border border-brand-100">
-                        <h4 class="font-bold text-brand-800 mb-2">Join the Movement</h4>
-                        <p class="text-sm">We are an open-source initiative. Join us in making our cities friendlier for our four-legged companions.</p>
+                <!-- Mission Grid -->
+                <div class="bg-brand-50 rounded-3xl p-8 md:p-12 mb-20">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">How We Help</h3>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 text-brand-700">Identify</h4>
+                            <p class="text-gray-600">Our GPS-enabled reporting tool allows anyone to document a stray's location and condition in seconds.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 text-brand-700">Coordinate</h4>
+                            <p class="text-gray-600">Local guardians receive alerts for nearby animals, ensuring food and medical aid reaches them fast.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 text-brand-700">Rehome</h4>
+                            <p class="text-gray-600">We verify potential adopters and connect them directly with rescuers, cutting out the middleman.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Get in Touch</h3>
+                    <p class="text-gray-600 mb-8">Want to volunteer, donate, or just say hi?</p>
+                    <div class="flex justify-center gap-4">
+                        <a href="#" class="px-6 py-3 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition">Email Us</a>
+                        <a href="#" class="px-6 py-3 bg-brand-600 text-white rounded-lg font-bold hover:bg-brand-700 transition shadow-lg">Join WhatsApp Group</a>
                     </div>
                 </div>
             </div>
@@ -197,7 +300,7 @@
     <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-[1000] w-full max-w-sm px-4"></div>
 
-    <!-- Modals (Auth, Wizard, Profile) - Kept same as before -->
+    <!-- Modals (Auth, Wizard, Profile) -->
     <div id="auth-modal" class="modal hidden fixed inset-0 z-[2000] bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
