@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AdoptUs Pro</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            500: '#10B981', // Emerald 500
+                            600: '#059669', // Emerald 600
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 h-screen overflow-hidden flex flex-col">
+
+    <!-- Header / Nav -->
+    <nav class="bg-white shadow-md z-50 flex justify-between items-center px-4 py-3">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🐾</span>
+            <h1 class="text-xl font-bold text-gray-800">AdoptUs</h1>
+        </div>
+        <div class="flex gap-3">
+            <button id="nav-auth-btn" class="text-sm bg-brand-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-brand-600 transition">
+                Login
+            </button>
+            <button id="nav-profile-btn" class="hidden flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">
+                <div class="w-6 h-6 bg-brand-500 rounded-full text-white flex items-center justify-center text-xs">G</div>
+                <span class="text-sm font-semibold text-gray-700 truncate max-w-[80px]">User</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Filter Bar (Floating) -->
+    <div class="absolute top-20 left-1/2 transform -translate-x-1/2 z-40 flex gap-2 overflow-x-auto max-w-full px-4 py-2 no-scrollbar">
+        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="All">All</button>
+        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Dog">Dogs 🐶</button>
+        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Cat">Cats 🐱</button>
+        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Critical">Critical 🚨</button>
+        <button class="filter-chip bg-white shadow-md px-4 py-1 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap active:scale-95 transition" data-filter="Adopted">Adopted 🏠</button>
+    </div>
+
+    <!-- Map Container -->
+    <main class="flex-1 relative">
+        <div id="map"></div>
+
+        <!-- FAB -->
+        <button id="fab-report" class="hidden absolute bottom-8 right-6 w-14 h-14 bg-brand-500 hover:bg-brand-600 text-white rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition transform hover:scale-105 z-30">
+            +
+        </button>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4"></div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 m-4 shadow-2xl relative">
+            <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+
+            <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Welcome Guardian</h2>
+
+            <!-- Google Login -->
+            <button id="google-login-btn" class="w-full border border-gray-300 rounded-lg py-2.5 flex items-center justify-center gap-2 hover:bg-gray-50 transition mb-4">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                <span class="text-gray-700 font-medium">Continue with Google</span>
+            </button>
+
+            <div class="relative flex py-2 items-center">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="flex-shrink mx-4 text-gray-400 text-sm">Or with Email</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            <!-- Email Forms (Simplified Toggle for demo) -->
+            <form id="login-form" class="space-y-4 mt-4">
+                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <button type="submit" class="w-full bg-brand-500 text-white py-2 rounded-lg font-bold hover:bg-brand-600 transition">Log In</button>
+            </form>
+
+            <div class="mt-4 text-center text-sm">
+                <p class="text-gray-600">New here? <span class="text-brand-600 cursor-pointer hover:underline" onclick="document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden');">Sign Up</span></p>
+            </div>
+
+             <form id="signup-form" class="space-y-4 mt-4 hidden">
+                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" required>
+                <button type="submit" class="w-full bg-brand-500 text-white py-2 rounded-lg font-bold hover:bg-brand-600 transition">Create Account</button>
+                <div class="text-center text-sm"><span class="text-brand-600 cursor-pointer hover:underline" onclick="document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden');">Back to Login</span></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Wizard Modal -->
+    <div id="wizard-modal" class="modal hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-6 m-4 shadow-2xl relative h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Report Stray</h2>
+                <button class="modal-close text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+
+            <form id="wizard-form" class="flex-1 overflow-y-auto pr-1">
+                <!-- Step 1: Photo -->
+                <div id="step-1" class="space-y-4">
+                    <label class="block text-sm font-bold text-gray-700">1. Take a Photo</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 cursor-pointer relative">
+                        <input type="file" id="post-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                        <div class="text-gray-500">
+                            <span class="text-4xl block mb-2">📸</span>
+                            <span class="text-sm">Click to upload or capture</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Location -->
+                <div id="step-2" class="space-y-4 hidden">
+                    <label class="block text-sm font-bold text-gray-700">2. Confirm Location</label>
+                    <div id="wizard-map"></div>
+                    <p class="text-xs text-gray-500">Drag the pin to the exact spot.</p>
+                </div>
+
+                <!-- Step 3: Details -->
+                <div id="step-3" class="space-y-4 hidden">
+                    <label class="block text-sm font-bold text-gray-700">3. Details</label>
+
+                    <div>
+                        <label class="text-xs text-gray-500">Animal Type</label>
+                        <select id="post-type" class="w-full border rounded p-2">
+                            <option value="Dog">Dog</option>
+                            <option value="Cat">Cat</option>
+                            <option value="Bird">Bird</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-500">Urgency</label>
+                        <select id="post-urgency" class="w-full border rounded p-2">
+                            <option value="needs-food">Needs Food/Water</option>
+                            <option value="critical">Critical / Injured</option>
+                            <option value="adoption-ready">Healthy / Adoption Ready</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-500">Description</label>
+                        <textarea id="post-desc" class="w-full border rounded p-2 h-20" placeholder="Color, size, condition..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-500">WhatsApp (for contact)</label>
+                        <input type="tel" id="post-whatsapp" class="w-full border rounded p-2" placeholder="e.g. 15551234567">
+                    </div>
+                </div>
+            </form>
+
+            <div class="flex justify-between mt-6 pt-4 border-t border-gray-100">
+                <button id="wizard-back" class="hidden px-4 py-2 text-gray-500 hover:bg-gray-100 rounded">Back</button>
+                <button id="wizard-next" class="ml-auto px-6 py-2 bg-brand-500 text-white rounded font-bold hover:bg-brand-600">Next</button>
+                <button id="wizard-submit" class="hidden ml-auto px-6 py-2 bg-brand-500 text-white rounded font-bold hover:bg-brand-600">Submit Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 m-4 shadow-2xl relative">
+            <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-brand-100 rounded-full mx-auto flex items-center justify-center text-3xl mb-2">🦸</div>
+                <h2 id="profile-name" class="text-xl font-bold">User</h2>
+                <p id="profile-email" class="text-gray-500 text-sm">user@example.com</p>
+                <div class="mt-2 inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold">
+                    ⭐ <span id="profile-karma">0 Karma</span>
+                </div>
+            </div>
+
+            <div class="border-t pt-4">
+                <h3 class="font-bold text-gray-700 mb-3">My Rescues</h3>
+                <div id="my-rescues-list" class="max-h-60 overflow-y-auto">
+                    <!-- Dynamic List -->
+                </div>
+            </div>
+
+            <button id="logout-btn" class="w-full mt-6 bg-red-50 text-red-600 py-2 rounded font-bold hover:bg-red-100">Log Out</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
